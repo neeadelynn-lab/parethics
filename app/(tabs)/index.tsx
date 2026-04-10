@@ -1,16 +1,19 @@
 import { CameraView, useCameraPermissions } from 'expo-camera';
+import { useRouter } from 'expo-router';
 import { useState } from 'react';
-import { Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 export default function HomeScreen() {
+  const router = useRouter();
   const [scanning, setScanning] = useState(false);
+  const [scanned, setScanned] = useState(false);
   const [permission, requestPermission] = useCameraPermissions();
 
   const handleScan = async () => {
+    setScanned(false);
     if (!permission?.granted) {
       const result = await requestPermission();
       if (!result.granted) {
-        Alert.alert('Camera needed', 'Please allow camera access to scan products.');
         return;
       }
     }
@@ -18,8 +21,10 @@ export default function HomeScreen() {
   };
 
   const handleBarcodeScanned = ({ data }: { data: string }) => {
+    if (scanned) return;
+    setScanned(true);
     setScanning(false);
-    Alert.alert('Product Found! 🎉', `Barcode: ${data}\n\nNext step: looking up this product...`);
+    router.push({ pathname: '/product', params: { barcode: data } });
   };
 
   if (scanning) {
@@ -43,7 +48,7 @@ export default function HomeScreen() {
 
   return (
     <ScrollView style={styles.container}>
-      
+
       {/* HEADER */}
       <View style={styles.header}>
         <Text style={styles.appName}>Parethics</Text>
