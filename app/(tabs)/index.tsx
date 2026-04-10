@@ -1,6 +1,46 @@
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { CameraView, useCameraPermissions } from 'expo-camera';
+import { useState } from 'react';
+import { Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 export default function HomeScreen() {
+  const [scanning, setScanning] = useState(false);
+  const [permission, requestPermission] = useCameraPermissions();
+
+  const handleScan = async () => {
+    if (!permission?.granted) {
+      const result = await requestPermission();
+      if (!result.granted) {
+        Alert.alert('Camera needed', 'Please allow camera access to scan products.');
+        return;
+      }
+    }
+    setScanning(true);
+  };
+
+  const handleBarcodeScanned = ({ data }: { data: string }) => {
+    setScanning(false);
+    Alert.alert('Product Found! 🎉', `Barcode: ${data}\n\nNext step: looking up this product...`);
+  };
+
+  if (scanning) {
+    return (
+      <View style={styles.scannerContainer}>
+        <CameraView
+          style={styles.camera}
+          onBarcodeScanned={handleBarcodeScanned}
+          barcodeScannerSettings={{ barcodeTypes: ['ean13', 'ean8', 'upc_a', 'upc_e'] }}
+        />
+        <View style={styles.overlay}>
+          <View style={styles.scanFrame} />
+          <Text style={styles.scanInstruction}>Point at any product barcode</Text>
+          <TouchableOpacity style={styles.cancelButton} onPress={() => setScanning(false)}>
+            <Text style={styles.cancelText}>Cancel</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    );
+  }
+
   return (
     <ScrollView style={styles.container}>
       
@@ -12,7 +52,7 @@ export default function HomeScreen() {
 
       {/* SCAN BUTTON */}
       <View style={styles.scanSection}>
-        <TouchableOpacity style={styles.scanButton}>
+        <TouchableOpacity style={styles.scanButton} onPress={handleScan}>
           <Text style={styles.scanIcon}>📷</Text>
           <Text style={styles.scanText}>Scan a Product</Text>
         </TouchableOpacity>
@@ -67,7 +107,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   appName: {
-    fontFamily: 'System',
     fontSize: 42,
     fontWeight: '900',
     color: '#FEFCF9',
@@ -167,5 +206,47 @@ const styles = StyleSheet.create({
     color: '#8C7B6E',
     textAlign: 'center',
     lineHeight: 20,
+  },
+  scannerContainer: {
+    flex: 1,
+    backgroundColor: 'black',
+  },
+  camera: {
+    flex: 1,
+  },
+  overlay: {
+    position: 'absolute',
+    top: 0, left: 0, right: 0, bottom: 0,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  scanFrame: {
+    width: 260,
+    height: 260,
+    borderRadius: 16,
+    borderWidth: 3,
+    borderColor: '#C4511A',
+    backgroundColor: 'transparent',
+    marginBottom: 24,
+  },
+  scanInstruction: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: '600',
+    marginBottom: 40,
+    textAlign: 'center',
+  },
+  cancelButton: {
+    backgroundColor: 'rgba(255,255,255,0.15)',
+    paddingHorizontal: 32,
+    paddingVertical: 14,
+    borderRadius: 30,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.3)',
+  },
+  cancelText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: '600',
   },
 });
