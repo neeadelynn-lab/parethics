@@ -1,98 +1,171 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
-
-import { HelloWave } from '@/components/hello-wave';
-import ParallaxScrollView from '@/components/parallax-scroll-view';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { Link } from 'expo-router';
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 export default function HomeScreen() {
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <Link href="/modal">
-          <Link.Trigger>
-            <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-          </Link.Trigger>
-          <Link.Preview />
-          <Link.Menu>
-            <Link.MenuAction title="Action" icon="cube" onPress={() => alert('Action pressed')} />
-            <Link.MenuAction
-              title="Share"
-              icon="square.and.arrow.up"
-              onPress={() => alert('Share pressed')}
-            />
-            <Link.Menu title="More" icon="ellipsis">
-              <Link.MenuAction
-                title="Delete"
-                icon="trash"
-                destructive
-                onPress={() => alert('Delete pressed')}
-              />
-            </Link.Menu>
-          </Link.Menu>
-        </Link>
+    <ScrollView style={styles.container}>
+      
+      {/* HEADER */}
+      <View style={styles.header}>
+        <Text style={styles.appName}>Parethics</Text>
+        <Text style={styles.tagline}>Scan. Know. Protect.</Text>
+      </View>
 
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+      {/* SCAN BUTTON */}
+      <View style={styles.scanSection}>
+        <TouchableOpacity style={styles.scanButton}>
+          <Text style={styles.scanIcon}>📷</Text>
+          <Text style={styles.scanText}>Scan a Product</Text>
+        </TouchableOpacity>
+        <Text style={styles.scanSub}>Point at any barcode on baby & kids products</Text>
+      </View>
+
+      {/* SCORE PREVIEW */}
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>How We Score</Text>
+        <View style={styles.pillarsRow}>
+          <View style={styles.pillar}>
+            <Text style={styles.pillarIcon}>🛡️</Text>
+            <Text style={styles.pillarName}>Safety</Text>
+          </View>
+          <View style={styles.pillar}>
+            <Text style={styles.pillarIcon}>⚖️</Text>
+            <Text style={styles.pillarName}>Ethics</Text>
+          </View>
+          <View style={styles.pillar}>
+            <Text style={styles.pillarIcon}>🌱</Text>
+            <Text style={styles.pillarName}>Planet</Text>
+          </View>
+          <View style={styles.pillar}>
+            <Text style={styles.pillarIcon}>👩</Text>
+            <Text style={styles.pillarName}>Moms</Text>
+          </View>
+        </View>
+      </View>
+
+      {/* RECENT SCANS */}
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Recent Scans</Text>
+        <View style={styles.emptyState}>
+          <Text style={styles.emptyIcon}>🔍</Text>
+          <Text style={styles.emptyText}>Your scanned products will appear here</Text>
+        </View>
+      </View>
+
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
+  container: {
+    flex: 1,
+    backgroundColor: '#FBF7F2',
+  },
+  header: {
+    backgroundColor: '#1A1410',
+    padding: 48,
+    paddingTop: 72,
     alignItems: 'center',
-    gap: 8,
   },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
+  appName: {
+    fontFamily: 'System',
+    fontSize: 42,
+    fontWeight: '900',
+    color: '#FEFCF9',
+    letterSpacing: -1,
+    marginBottom: 6,
   },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
+  tagline: {
+    fontSize: 14,
+    color: '#C4511A',
+    fontWeight: '500',
+    letterSpacing: 2,
+    textTransform: 'uppercase',
+  },
+  scanSection: {
+    alignItems: 'center',
+    padding: 40,
+    paddingBottom: 32,
+  },
+  scanButton: {
+    backgroundColor: '#C4511A',
+    width: 160,
+    height: 160,
+    borderRadius: 80,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 20,
+    shadowColor: '#C4511A',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.35,
+    shadowRadius: 20,
+    elevation: 10,
+  },
+  scanIcon: {
+    fontSize: 48,
+    marginBottom: 6,
+  },
+  scanText: {
+    color: 'white',
+    fontSize: 13,
+    fontWeight: '600',
+    letterSpacing: 0.5,
+  },
+  scanSub: {
+    fontSize: 13,
+    color: '#8C7B6E',
+    textAlign: 'center',
+    maxWidth: 240,
+    lineHeight: 18,
+  },
+  section: {
+    padding: 24,
+    paddingTop: 8,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#1A1410',
+    marginBottom: 14,
+  },
+  pillarsRow: {
+    flexDirection: 'row',
+    gap: 10,
+  },
+  pillar: {
+    flex: 1,
+    backgroundColor: 'white',
+    borderRadius: 12,
+    padding: 14,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: 'rgba(26,20,16,0.08)',
+  },
+  pillarIcon: {
+    fontSize: 24,
+    marginBottom: 6,
+  },
+  pillarName: {
+    fontSize: 11,
+    fontWeight: '600',
+    color: '#1A1410',
+    textAlign: 'center',
+  },
+  emptyState: {
+    backgroundColor: 'white',
+    borderRadius: 12,
+    padding: 32,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: 'rgba(26,20,16,0.08)',
+  },
+  emptyIcon: {
+    fontSize: 32,
+    marginBottom: 10,
+  },
+  emptyText: {
+    fontSize: 13,
+    color: '#8C7B6E',
+    textAlign: 'center',
+    lineHeight: 20,
   },
 });
